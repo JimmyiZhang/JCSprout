@@ -12,13 +12,21 @@ public class EnumTest {
     }
 
     @Test
-    public void ValuesTest() {
+    public void valuesTest() {
         Number[] numbers = Number.values();
         for (Number n : numbers) {
             System.out.println("第" + n.ordinal() + "个枚举，值是： " + numbers[n.ordinal()].name());
         }
 
         Assert.assertTrue(numbers.length == 4);
+    }
+
+    @Test
+    public void valueOfTest() {
+        Number one = Enum.valueOf(Number.class, "ONE");
+        System.out.println(one.toString());
+
+        Assert.assertTrue(one.equals(Number.ONE));
     }
 }
 
