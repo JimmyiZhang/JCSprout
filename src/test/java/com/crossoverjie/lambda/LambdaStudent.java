@@ -5,6 +5,10 @@ public class LambdaStudent {
     private int weight;
     private int height;
 
+    public LambdaStudent(String name){
+        this.name = name;
+    }
+
     public LambdaStudent(String name, int weight, int height) {
         this.name = name;
         this.weight = weight;

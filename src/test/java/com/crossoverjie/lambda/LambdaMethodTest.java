@@ -3,7 +3,12 @@ package com.crossoverjie.lambda;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LambdaMethodTest {
     @Test
@@ -35,6 +40,21 @@ public class LambdaMethodTest {
 
         // 正常模式
         Arrays.stream(students).forEach(x -> System.out.println(x.toString()));
-        Assert.isTrue(true, "循环输出");
+        Assert.isTrue(true, "方法引用");
+    }
+
+    @Test
+    public void newMethodTest() {
+        ArrayList<String> names = new ArrayList<>();
+        names.add("A");
+        names.add("B");
+        names.add("C");
+
+        LambdaStudent[] students = names.stream().map(LambdaStudent::new)
+                .toArray(LambdaStudent[]::new);
+        // Stream<LambdaStudent> stream = names.stream().map(LambdaStudent::new);
+
+        Arrays.stream(students).forEach(x -> System.out.println(x.toString()));
+        Assert.isTrue(true,"构造器引用");
     }
 }
