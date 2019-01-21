@@ -1,16 +1,22 @@
 package com.crossoverjie.lambda;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LambdaMethodTest {
+    private static LambdaStudent[] students = new LambdaStudent[3];
+
+    @BeforeClass
+    public static void init() {
+        students[0] = new LambdaStudent("L", 40, 170);
+        students[1] = new LambdaStudent("S", 50, 150);
+        students[2] = new LambdaStudent("M", 60, 160);
+    }
+
     @Test
     public void staticMethodTest() {
         LambdaStudent[] students = {
@@ -55,6 +61,6 @@ public class LambdaMethodTest {
         // Stream<LambdaStudent> stream = names.stream().map(LambdaStudent::new);
 
         Arrays.stream(students).forEach(x -> System.out.println(x.toString()));
-        Assert.isTrue(true,"构造器引用");
+        Assert.isTrue(true, "构造器引用");
     }
 }
