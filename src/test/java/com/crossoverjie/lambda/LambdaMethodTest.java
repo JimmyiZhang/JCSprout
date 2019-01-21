@@ -6,6 +6,8 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LambdaMethodTest {
     private static LambdaStudent[] students = new LambdaStudent[3];
@@ -19,11 +21,6 @@ public class LambdaMethodTest {
 
     @Test
     public void staticMethodTest() {
-        LambdaStudent[] students = {
-                new LambdaStudent("L", 40, 170),
-                new LambdaStudent("S", 50, 150),
-                new LambdaStudent("M", 60, 160),
-        };
         // 方法引用
         // Class::staticMethod
         Arrays.sort(students, LambdaStudent::compareHeight);
@@ -35,11 +32,6 @@ public class LambdaMethodTest {
 
     @Test
     public void instanceMethodTest() {
-        LambdaStudent[] students = {
-                new LambdaStudent("L", 40, 170),
-                new LambdaStudent("S", 50, 150),
-                new LambdaStudent("M", 60, 160),
-        };
         // 方法引用
         // Class::instanceMethod
         Arrays.sort(students, LambdaStudent::compareWeight);
@@ -62,5 +54,24 @@ public class LambdaMethodTest {
 
         Arrays.stream(students).forEach(x -> System.out.println(x.toString()));
         Assert.isTrue(true, "构造器引用");
+    }
+
+    @Test
+    public void filterTest() {
+        long count = Arrays.stream(students)
+                .filter(p -> p.getWeight() > 50)
+                .count();
+        System.out.println(count);
+        Assert.isTrue(count == 1, "filter测试");
+    }
+
+    @Test
+    public void mapTest() {
+        List<LambdaStudentMap> result = Arrays.stream(students)
+                .map(a -> new LambdaStudentMap(a.getName()))
+                .collect(Collectors.toList());
+
+        result.forEach(a -> System.out.println(a.getName()));
+        Assert.notNull(result,"map测试");
     }
 }
