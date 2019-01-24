@@ -4,19 +4,22 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LambdaMethodTest {
-    private static LambdaStudent[] students = new LambdaStudent[3];
+    private static LambdaStudent[] students = new LambdaStudent[5];
 
     @BeforeClass
     public static void init() {
-        students[0] = new LambdaStudent("L", 40, 170);
-        students[1] = new LambdaStudent("S", 50, 150);
-        students[2] = new LambdaStudent("M", 60, 160);
+        students[0] = new LambdaStudent("XL", 40, 170);
+        students[1] = new LambdaStudent("L", 45, 150);
+        students[2] = new LambdaStudent("S", 50, 155);
+        students[3] = new LambdaStudent("M", 55, 140);
+        students[4] = new LambdaStudent("SM", 60, 145);
     }
 
     @Test
@@ -58,20 +61,35 @@ public class LambdaMethodTest {
 
     @Test
     public void filterTest() {
+        // 过滤流
+        // 包含当前流中所有满足断言条件的元素
         long count = Arrays.stream(students)
                 .filter(p -> p.getWeight() > 50)
                 .count();
         System.out.println(count);
-        Assert.isTrue(count == 1, "filter测试");
+        Assert.isTrue(count == 2, "filter测试");
     }
 
     @Test
     public void mapTest() {
+        // 映射流
+        // 应用于当前流中所有元素所产生的结果
         List<LambdaStudentMap> result = Arrays.stream(students)
                 .map(a -> new LambdaStudentMap(a.getName()))
                 .collect(Collectors.toList());
 
         result.forEach(a -> System.out.println(a.getName()));
         Assert.notNull(result,"map测试");
+    }
+
+    @Test
+    public void skipAndLimitTest(){
+        List<LambdaStudent> result = Arrays.stream(students)
+                .skip(1)
+                .limit(1)
+                .collect(Collectors.toList());
+
+        result.forEach(a -> System.out.println(a.getName()));
+        Assert.isTrue(result.size() == 1, "skip-limit测试");
     }
 }
