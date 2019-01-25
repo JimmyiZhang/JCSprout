@@ -3,7 +3,6 @@ package com.crossoverjie.lambda;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class LambdaOptionalTest {
@@ -16,12 +15,12 @@ public class LambdaOptionalTest {
     }
 
     @Test
-    public void optionalPresentTest(){
+    public void optionalPresentTest() {
         String str = "good";
         Optional op = Optional.of(str);
-        op.ifPresent( v->System.out.println(v));
+        op.ifPresent(v -> System.out.println(v));
 
-        Assert.isTrue(op.isPresent(),"empty optional");
+        Assert.isTrue(op.isPresent(), "empty optional");
     }
 
 }

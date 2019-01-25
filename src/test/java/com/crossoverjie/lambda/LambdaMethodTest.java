@@ -4,11 +4,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LambdaMethodTest {
     private static LambdaStudent[] students = new LambdaStudent[5];
@@ -16,9 +18,9 @@ public class LambdaMethodTest {
     @BeforeClass
     public static void init() {
         students[0] = new LambdaStudent("XL", 40, 170);
-        students[1] = new LambdaStudent("L", 45, 150);
+        students[1] = new LambdaStudent("L", 40, 150);
         students[2] = new LambdaStudent("S", 50, 155);
-        students[3] = new LambdaStudent("M", 55, 140);
+        students[3] = new LambdaStudent("M", 50, 140);
         students[4] = new LambdaStudent("SM", 60, 145);
     }
 
@@ -79,11 +81,11 @@ public class LambdaMethodTest {
                 .collect(Collectors.toList());
 
         result.forEach(a -> System.out.println(a.getName()));
-        Assert.notNull(result,"map测试");
+        Assert.notNull(result, "map测试");
     }
 
     @Test
-    public void skipAndLimitTest(){
+    public void skipAndLimitTest() {
         List<LambdaStudent> result = Arrays.stream(students)
                 .skip(1)
                 .limit(1)
@@ -91,5 +93,37 @@ public class LambdaMethodTest {
 
         result.forEach(a -> System.out.println(a.getName()));
         Assert.isTrue(result.size() == 1, "skip-limit测试");
+    }
+
+    @Test
+    public void toMapTest() {
+        Map<String, LambdaStudent> result = Arrays.stream(students)
+                .collect(Collectors.toMap(LambdaStudent::getName, Function.identity()));
+
+        result.entrySet().forEach(m -> System.out.println(m.getKey()));
+
+        Assert.isTrue(result.size() == 5, "toMap测试");
+    }
+
+    @Test
+    public void groupTest(){
+        LambdaStudent[] students = new LambdaStudent[5];
+        students[0] = new LambdaStudent("L", 40, 170);
+        students[1] = new LambdaStudent("L", 40, 150);
+        students[2] = new LambdaStudent("S", 50, 155);
+        students[3] = new LambdaStudent("M", 50, 140);
+        students[4] = new LambdaStudent("M", 60, 145);
+
+        Map<String, List<LambdaStudent>> result = Arrays.stream(students)
+                .collect(Collectors.groupingBy(LambdaStudent::getName));
+
+        result.entrySet().forEach(m -> System.out.println(m.getValue().size()));
+        Assert.isTrue(result.size() == 3, "toMap测试");
+    }
+
+    @Test
+    public void intStreamTest(){
+        IntStream stream = IntStream.of(1,2,3,4);
+
     }
 }
