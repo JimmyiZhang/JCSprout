@@ -4,9 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -102,6 +100,7 @@ public class StreamBasicTest {
         List<LambdaStudent> list = Arrays.stream(students).collect(Collectors.toList());
         int count = list.size();
         System.out.println(count);
+        System.out.println(list.getClass().getName());
         Assert.isTrue(count == 5, "toList测试");
     }
 
@@ -117,18 +116,35 @@ public class StreamBasicTest {
         // 扩展toSet, toCollection
     }
 
+    // 收集为LinkedList
+    @Test
+    public void toCollectionTest(){
+        List<LambdaStudent> list = Arrays.stream(students).collect(Collectors.toCollection(LinkedList::new));
+        int count = list.size();
+        System.out.println(count);
+        System.out.println(list.getClass().getName());
+        Assert.isTrue(count == 5, "toCollection测试");
+    }
+
     // 计数
     @Test
-    public void countTest(){
+    public void countingTest(){
         Long count = Arrays.stream(students).collect(Collectors.counting());
+        System.out.println(count);
+        Assert.isTrue(count == 5, "counting测试");
+    }
 
-
-
+    // 计数
+    @Test
+    public void summingTest(){
+        IntSummaryStatistics count = Arrays.stream(students).collect(Collectors.summarizingInt(LambdaStudent::getWeight));
+        System.out.println(count.getMin());
+        Assert.isTrue(count.getMin() == 40, "summing");
     }
 
     // 分组收集
     @Test
-    public void groupTest() {
+    public void groupingTest() {
         LambdaStudent[] students = new LambdaStudent[5];
         students[0] = new LambdaStudent("L", 40, 170);
         students[1] = new LambdaStudent("L", 40, 150);
@@ -142,29 +158,5 @@ public class StreamBasicTest {
         result.entrySet().forEach(m -> System.out.println(m.getValue().size()));
         Assert.isTrue(result.size() == 3, "toMap测试");
         // 扩展partitioningBy
-    }
-
-    // ===================规约============================
-    // 求和
-    @Test
-    public void reduceSumTest() {
-        int total = Arrays.stream(students)
-                .map(LambdaStudent::getWeight)
-                .reduce(0, (a, b) -> a + b);
-
-        System.out.println(total);
-        Assert.isTrue(total == 240, "reduce sum");
-    }
-
-    // 求最小值
-    @Test
-    public void reduceMinTest() {
-        int min = Arrays.stream(students)
-                .map(LambdaStudent::getWeight)
-                .reduce((x, y) -> x > y ? y : x)
-                .get();
-
-        System.out.println(min);
-        Assert.isTrue(min == 40, "reduce min");
     }
 }
