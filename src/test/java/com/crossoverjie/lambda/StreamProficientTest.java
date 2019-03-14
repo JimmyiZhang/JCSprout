@@ -19,8 +19,7 @@ public class StreamProficientTest {
         students[4] = new LambdaStudent("SM", 60, 145);
     }
 
-    // ===================规约============================
-    // 归约求和
+    // 代替策略模式
     @Test
     public void reduceSumTest() {
         int total = Arrays.stream(students)
@@ -31,37 +30,5 @@ public class StreamProficientTest {
         Assert.isTrue(total == 240, "reduce sum");
     }
 
-    // 收集求和
-    @Test
-    public void collectSumTest() {
-        int total = Arrays.stream(students)
-                .collect(Collectors.reducing(
-                        0,
-                        LambdaStudent::getWeight,
-                        Integer::sum));
-        System.out.println(total);
-        Assert.isTrue(total == 240, "collect sum");
-    }
 
-    // 基本类型流
-    @Test
-    public void intStreamTest() {
-        int total = Arrays.stream(students)
-                .mapToInt(LambdaStudent::getWeight)
-                .sum();
-        System.out.println(total);
-        Assert.isTrue(total == 240, "mapToInt sum");
-    }
-
-    // 求最小值
-    @Test
-    public void reduceMinTest() {
-        int min = Arrays.stream(students)
-                .map(LambdaStudent::getWeight)
-                .reduce((x, y) -> x > y ? y : x)
-                .get();
-
-        System.out.println(min);
-        Assert.isTrue(min == 40, "reduce min");
-    }
 }
