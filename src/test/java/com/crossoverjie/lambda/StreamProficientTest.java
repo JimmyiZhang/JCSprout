@@ -1,5 +1,9 @@
 package com.crossoverjie.lambda;
 
+import com.crossoverjie.pattern.chain.BodyProcessing;
+import com.crossoverjie.pattern.chain.FooterProcessing;
+import com.crossoverjie.pattern.chain.HeaderProcessing;
+import com.crossoverjie.pattern.chain.ProcessingChain;
 import com.crossoverjie.pattern.observer.FlourMessageObserver;
 import com.crossoverjie.pattern.observer.MessageSubject;
 import com.crossoverjie.pattern.observer.RiceMessageObserver;
@@ -18,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -103,7 +109,7 @@ public class StreamProficientTest {
     }
 
     // =============重构面向对象的设计模式============
-    // 代替策略模式
+    // 重构策略模式
     @Test
     public void refactor4() {
         // 打折策略
@@ -121,7 +127,7 @@ public class StreamProficientTest {
         Assert.isTrue(target2 > target1, "Strategy test ");
     }
 
-    // 代替模板模式
+    // 重构模板模式
     @Test
     public void refactor5() {
         ApprovalProcess process = new FinanceApprovalProcess();
@@ -134,7 +140,7 @@ public class StreamProficientTest {
         Assert.isTrue(true, "template pattern");
     }
 
-    // 代替观察者模式
+    // 重构观察者模式
     @Test
     public void refactor6() {
         MessageSubject subject = new MessageSubject();
@@ -143,8 +149,8 @@ public class StreamProficientTest {
         subject.register(new FlourMessageObserver());
 
         // 使用Lambda表达式注册一个观察者
-        subject.register(s->{
-            if(s.getName().equals("RICE")){
+        subject.register(s -> {
+            if (s.getName().equals("RICE")) {
                 System.out.println("Lambda收到一个消息，哈哈哈");
             }
         });
@@ -155,5 +161,26 @@ public class StreamProficientTest {
         subject.notice(message);
 
         Assert.isTrue(true, "observer pattern");
+    }
+
+    // 重构责任链
+    @Test
+    public void refactor7() {
+        ProcessingChain<String> p1 = new HeaderProcessing();
+        ProcessingChain<String> p2 = new BodyProcessing();
+
+        p2.setSuccessor(p1);
+
+        String result1 = p2.handle("chain");
+        System.out.println(result1);
+        Assert.isTrue(result1 != null, "chain pattern");
+
+        UnaryOperator<String> body = ipt -> "<body>" + ipt + "<body>";
+        UnaryOperator<String> footer = ipt -> ipt + "<footer>carbycar<footer>";
+        Function<String, String> pipeline = body.andThen(footer);
+        String result2 = pipeline.apply("chain");
+        System.out.println(result2);
+
+        Assert.isTrue(result2 != null, "chain pattern");
     }
 }
