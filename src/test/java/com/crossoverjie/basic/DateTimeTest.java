@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -30,19 +31,13 @@ public class DateTimeTest {
         Instant instant1 = Instant.now();
         System.out.println("Instant时间日期：" + instant1);
         long instantSecond = instant1.getEpochSecond();
-        System.out.println("Instant时间毫秒：" + instantSecond);
-
-        // new SystemClock(ZoneId.systemDefault());
-        Clock clock1 = Clock.systemDefaultZone();
-        // instant().toEpochMilli();
-        long clockSecond = clock1.millis() / 1000;
-        System.out.println("Clock时间毫秒：" + clockSecond);
+        System.out.println("Instant时间秒数：" + instantSecond);
 
         LocalDateTime local1 = LocalDateTime.now();
-        long localSecond = local1.getYear() * 365 * 24 * 60 * 60L;
-        System.out.println("local时间毫秒：" + localSecond);
+        long localSecond = local1.toEpochSecond(ZoneOffset.of("+8"));
+        System.out.println("local时间秒数：" + localSecond);
 
-        Assert.assertTrue(clockSecond == instantSecond);
+        Assert.assertTrue(localSecond <= instantSecond);
     }
 
     @Test
@@ -70,17 +65,33 @@ public class DateTimeTest {
 
     @Test
     public void DurationTest() {
+        // 以秒或者纳秒衡量时间的长短
         final LocalDateTime from = LocalDateTime.of(2018, Month.AUGUST, 8, 8, 8, 8);
         final LocalDateTime to = LocalDateTime.of(2018, Month.AUGUST, 16, 16, 16, 16);
         final Duration duration = Duration.between(from, to);
         System.out.println("Duration in days : " + duration.toDays());
         System.out.println("Duration in hours: " + duration.toHours());
 
+        Duration duration2 = Duration.between(Instant.ofEpochSecond(10), Instant.ofEpochSecond(20));
+        System.out.println("Duration in seconds: " + duration2.getSeconds());
+
         Assert.assertTrue(duration.isZero() == false);
     }
 
     @Test
-    public void LocalTest() {
+    public void PeriodTest() {
+        // 以年月日衡量时间的长短
+        Period p1 = Period.between(LocalDate.of(2019, 1, 22), LocalDate.of(2019, 3, 1));
+
+        System.out.println("Period is days  :" + p1.getDays());
+        System.out.println("Period is months:" + p1.getMonths());
+        System.out.println("Period is years :" + p1.getYears());
+
+        Assert.assertTrue(p1.getDays() > 0);
+    }
+
+    @Test
+    public void LocalDateTimeTest() {
         LocalDateTime d1 = LocalDateTime.of(2018, 8, 8, 8, 8);
         System.out.println(d1);
         LocalDateTime d2 = LocalDateTime.parse("2018-08-08T08:08");
@@ -101,11 +112,19 @@ public class DateTimeTest {
         System.out.println("getMinute    :" + d1.getMinute());
         System.out.println("getSecond    :" + d1.getSecond());
 
+        LocalDateTime d3 = LocalDate.now().atTime(LocalTime.now());
+        System.out.println("getDayOfWeek :" + d3.getDayOfWeek());
+        System.out.println("getDayOfMonth:" + d3.getDayOfMonth());
+        System.out.println("getDayOfYear :" + d3.getDayOfYear());
+
+        System.out.println("EPOCH_DAY :" + d3.getLong(ChronoField.EPOCH_DAY));
+        System.out.println("lengthOfMonth:" + d3.toLocalDate().lengthOfMonth());
+
         Assert.assertTrue(d1.equals(d2));
     }
 
     @Test
-    public void CreateTest() {
+    public void LocalDateTimeAndInstantTest() {
         LocalDateTime now1 = LocalDateTime.of(2018, 8, 8, 8, 8, 8);
         Instant instant1 = now1.toInstant(ZoneOffset.of("+8"));
         long epoch1 = instant1.toEpochMilli();
@@ -114,11 +133,11 @@ public class DateTimeTest {
         Instant instant2 = now2.toInstant();
         long time2 = now2.getTimeInMillis();
         long epoch2 = instant2.toEpochMilli();
-
-
-        Instant instant3 = Instant.now();
         System.out.println("TimeInMillis: " + time2);
         System.out.println(" EpochMillis: " + epoch2);
+
+        Instant instant3 = Instant.now();
+        System.out.println("INSTANT_SECONDS: " + instant3.getLong(ChronoField.INSTANT_SECONDS));
 
         Assert.assertTrue(epoch1 == epoch2);
     }
