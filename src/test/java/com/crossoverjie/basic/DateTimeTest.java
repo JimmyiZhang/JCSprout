@@ -6,6 +6,8 @@ import org.junit.Test;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -49,6 +51,13 @@ public class DateTimeTest {
         LocalTime now2 = LocalTime.now(zone2);
         System.out.println("时区：Europe/Berlin---" + now1);
         System.out.println("时区：Brazil/East-----" + now2);
+
+        LocalDate date3 = LocalDate.of(2019, 3, 23);
+        ZonedDateTime zdt3 = date3.atStartOfDay(zone2);
+        System.out.println("atStartOfDay: " + zdt3);
+        LocalDateTime date4 = LocalDateTime.of(2019, 3, 23, 22, 24, 23);
+        ZonedDateTime zdt4 = date4.atZone(zone2);
+        System.out.println("asZone      :"+zdt4);
 
         Assert.assertTrue(true);
     }
@@ -143,12 +152,32 @@ public class DateTimeTest {
     }
 
     @Test
+    public void TemporalAdjusterTest() {
+        LocalDate date1 = LocalDate.of(2019, 3, 23);
+        LocalDate date2 = date1.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+
+        System.out.println(date2);
+
+        // firstDayOfMonth
+        // lastDayOfMonth
+        // next/previous
+
+        Assert.assertTrue(date2.getDayOfMonth() == 29);
+    }
+
+    @Test
     public void FormatterTest() {
-        LocalDateTime now = LocalDateTime.of(2018, 8, 8, 8, 8, 8);
-        DateTimeFormatter format1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String targetDT = "2018-08-08 08:08:08";
-        String actualDT = format1.format(now);
-        Assert.assertTrue(targetDT.equals(actualDT));
+        LocalDateTime now1 = LocalDateTime.of(2018, 8, 8, 8, 8, 8);
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String target = "2018-08-08 08:08:08";
+
+        String actual1 = format.format(now1);
+        Assert.assertTrue(target.equals(actual1));
+
+        LocalDateTime now2 = LocalDateTime.parse(target, format);
+        String actual2 = now2.format(format);
+        Assert.assertTrue(target.equals(actual2));
     }
 
 
