@@ -3,6 +3,11 @@ package com.crossoverjie.basic;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.Collator;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Locale;
+
 public class StringTest {
     @Test
     public void StringEqualsTest() {
@@ -22,7 +27,6 @@ public class StringTest {
         String b = new String("1234").intern();
 
         Assert.assertTrue("字符串相等", a == b);
-
     }
 
     @Test
@@ -39,5 +43,20 @@ public class StringTest {
         String actualF = String.format("%,.2f", sourceF);
         System.out.println(actualF);
         Assert.assertTrue("字符串相等", targetF.equals(actualF));
+    }
+
+    @Test
+    public void StringSortTest() {
+        String[] names = {"张健民(Z)", "刘幼石(L)", "王强(W)"};
+        Arrays.sort(names);
+
+        Arrays.stream(names).forEach(System.out::println);
+        // 排序后的结果：刘幼石(L) 张健民(Z) 王强(W)
+
+        Comparator cnComparator = Collator.getInstance(Locale.CHINA);
+        Arrays.sort(names, cnComparator);
+        Arrays.stream(names).forEach(System.out::println);
+        // 排序后的结果：刘幼石(L) 王强(W) 张健民(Z)
+        Assert.assertTrue("排序测试", names.length > 0);
     }
 }
